@@ -13,7 +13,7 @@ public class NewProjectForm extends Dialog implements IResourceful {
     @Override
     public void initComponents() {
         setTitle(getValue("menu.main.projects"));
-        setSize(new Dimension(500, 300));
+        setSize(new Dimension(840, 480));
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         JList<String> list = createLeft();
         splitPane.setLeftComponent(list);
@@ -25,7 +25,7 @@ public class NewProjectForm extends Dialog implements IResourceful {
 
     private JList<String> createLeft() {
         JList<String> list = new JList<>(Arrays.stream(ProjectTypes.values()).map(ProjectTypes::toString).toArray(String[]::new));
-        list.setPreferredSize(new Dimension(200, 300));
+        list.setPreferredSize(new Dimension(300, 400));
         list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         list.setSelectedIndex(0);
 
@@ -41,14 +41,14 @@ public class NewProjectForm extends Dialog implements IResourceful {
     private JPanel createRight() {
         JPanel panel = new JPanel(new BorderLayout());
         JLabel label = new JLabel("Create New Project");
-        JPanel bottom = new JPanel();
         label.setHorizontalAlignment(SwingConstants.CENTER);
         label.setFont(new Font("Calibri", Font.BOLD, 28));
         panel.add(label, BorderLayout.NORTH);
         panel.add(new JPanel(), BorderLayout.CENTER);
+        JPanel bottomPanel = new JPanel();
         JButton b1 = new JButton("Create");
-        bottom.add(b1);
-        panel.add(bottom, BorderLayout.PAGE_END);
+        bottomPanel.add(b1);
+        panel.add(bottomPanel, BorderLayout.PAGE_END);
         return panel;
     }
 }
