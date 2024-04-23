@@ -61,7 +61,7 @@ public class MainMenuForm extends Form {
         buttons.setLayout(new GridLayout(1, 3, 5, 5));
         JButton b1 = new JButton(r.get("menu.main.new_proj"));
         b1.addActionListener(ac -> {
-            new NewProjectForm().showForm();
+            new NewProjectForm(this).showForm();
         });
         JButton b2 = new JButton(r.get("menu.main.open_proj"));
         JButton b3 = new JButton(r.get("menu.main.options"));

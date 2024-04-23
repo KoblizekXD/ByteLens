@@ -3,8 +3,8 @@ package lol.koblizek.bytelens.ui;
 import javax.swing.*;
 
 public abstract class Dialog extends JDialog {
-    public Dialog() {
-        super();
+    public Dialog(JFrame parent) {
+        super(parent);
         initComponents();
     }
 

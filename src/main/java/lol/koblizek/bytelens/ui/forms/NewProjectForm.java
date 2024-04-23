@@ -5,11 +5,15 @@ import lol.koblizek.bytelens.ui.Dialog;
 import lol.koblizek.bytelens.util.IResourceful;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.Arrays;
 
 public class NewProjectForm extends Dialog implements IResourceful {
+
+    public NewProjectForm(JFrame parent) {
+        super(parent);
+    }
+
     @Override
     public void initComponents() {
         setTitle(getValue("menu.main.projects"));
