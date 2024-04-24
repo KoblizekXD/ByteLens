@@ -4,7 +4,11 @@ import lol.koblizek.bytelens.ByteLens;
 import lol.koblizek.bytelens.api.events.ProjectCreationEvent;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
+import java.nio.file.Path;
 
 public enum ProjectTypes implements ProjectType {
     NEW_PROJECT {
@@ -17,6 +21,11 @@ public enum ProjectTypes implements ProjectType {
             createTextField(panel, "Project Name:", c, "name");
             c.gridy++;
             createLocationField(panel, "Project Location:", c, "location");
+            c.gridx = 1;
+            c.gridy++;
+            JLabel label = new JLabel("Project will be created as directory: ");
+            label.setName("target_loc");
+            panel.add(label, c);
             return panel;
         }
 
@@ -45,6 +54,12 @@ public enum ProjectTypes implements ProjectType {
         JTextField field = new JTextField();
         field.setName(id);
         field.setPreferredSize(new Dimension(400, 25));
+        addOnChange(field, () -> {
+            JLabel label = (JLabel) getComponentByName(panel, "target_loc");
+            JTextField loc = (JTextField) getComponentByName(panel, "location");
+            label.setText("Project will be created as directory: " +
+                    Path.of(loc.getText(), field.getText(), "/"));
+        });
         panel.add(field, c);
     }
 
@@ -55,6 +70,12 @@ public enum ProjectTypes implements ProjectType {
         JTextField field = new JTextField();
         field.setName(location);
         field.setPreferredSize(new Dimension(400, 25));
+        addOnChange(field, () -> {
+            JLabel label = (JLabel) getComponentByName(panel, "target_loc");
+            JTextField name = (JTextField) getComponentByName(panel, "name");
+            label.setText("Project will be created as directory: " +
+                    Path.of(field.getText(), name.getText(), "/"));
+        });
         panel.add(field, c);
         JButton browse = new JButton("...");
         browse.setPreferredSize(new Dimension(25, 25));
@@ -77,5 +98,41 @@ public enum ProjectTypes implements ProjectType {
                     .append(" ");
         }
         return sb.toString();
+    }
+
+    JComponent getComponentByName(Container container, String name) {
+        for (Component component : container.getComponents()) {
+            if (component instanceof JComponent && component.getName() != null) {
+                if (component.getName().equals(name)) {
+                    return (JComponent) component;
+                }
+            }
+            if (component instanceof Container) {
+                JComponent comp = getComponentByName((Container) component, name);
+                if (comp != null) {
+                    return comp;
+                }
+            }
+        }
+        return null;
+    }
+
+    void addOnChange(JTextComponent com, Runnable r) {
+        com.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                changedUpdate(e);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                changedUpdate(e);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                r.run();
+            }
+        });
     }
 }
