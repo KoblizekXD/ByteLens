@@ -25,6 +25,7 @@ public class NewProjectForm extends Dialog implements IResourceful {
         ProjectTypes type = ProjectTypes.values()[list.getSelectedIndex()];
         type.populate((JPanel) ((JPanel) splitPane.getRightComponent()).getComponent(1));
         add(splitPane, BorderLayout.CENTER);
+        pack();
     }
 
     private JList<String> createLeft() {
@@ -46,7 +47,7 @@ public class NewProjectForm extends Dialog implements IResourceful {
         JPanel panel = new JPanel(new BorderLayout());
         JLabel label = new JLabel("Create New Project");
         label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setFont(new Font("Calibri", Font.BOLD, 28));
+        label.setFont(new Font("Calibri", Font.BOLD, 24));
         panel.add(label, BorderLayout.NORTH);
         panel.add(new JPanel(), BorderLayout.CENTER);
         JPanel bottomPanel = new JPanel();

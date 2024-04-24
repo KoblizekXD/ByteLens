@@ -1,5 +1,8 @@
 package lol.koblizek.bytelens.api;
 
+import lol.koblizek.bytelens.ByteLens;
+import lol.koblizek.bytelens.api.events.ProjectCreationEvent;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -11,10 +14,15 @@ public enum ProjectTypes implements ProjectType {
             GridBagConstraints c = new GridBagConstraints();
             c.fill = GridBagConstraints.HORIZONTAL;
             c.gridy = 0;
-            createTextField(panel, "Project Name:", c);
+            createTextField(panel, "Project Name:", c, "name");
             c.gridy++;
-            createLocationField(panel, "Project Location:", c);
+            createLocationField(panel, "Project Location:", c, "location");
             return panel;
+        }
+
+        @Override
+        public Project onProjectCreated(ProjectCreationEvent e) {
+            return super.onProjectCreated(e);
         }
     };
 
@@ -24,20 +32,22 @@ public enum ProjectTypes implements ProjectType {
                 .toLowerCase());
     }
 
-    void createTextField(JPanel panel, String title, GridBagConstraints c) {
+    void createTextField(JPanel panel, String title, GridBagConstraints c, String id) {
         c.gridx = 0;
         panel.add(new JLabel(title), c);
         c.gridx = 1;
         JTextField field = new JTextField();
+        field.setName(id);
         field.setPreferredSize(new Dimension(400, 25));
         panel.add(field, c);
     }
 
-    void createLocationField(JPanel panel, String title, GridBagConstraints c) {
+    void createLocationField(JPanel panel, String title, GridBagConstraints c, String location) {
         c.gridx = 0;
         panel.add(new JLabel(title), c);
         c.gridx = 1;
         JTextField field = new JTextField();
+        field.setName(location);
         field.setPreferredSize(new Dimension(400, 25));
         panel.add(field, c);
         JButton browse = new JButton("...");
