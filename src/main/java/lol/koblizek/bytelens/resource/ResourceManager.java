@@ -1,5 +1,7 @@
 package lol.koblizek.bytelens.resource;
 
+import lol.koblizek.bytelens.ByteLens;
+
 import java.util.Properties;
 
 public final class ResourceManager {
@@ -37,6 +39,11 @@ public final class ResourceManager {
     }
 
     public String get(String key) {
-        return translationKeys.getProperty(key);
+        String property = translationKeys.getProperty(key);
+        if (property == null) {
+            ByteLens.getInstance().getLogger().warn("Missing translation for key: {}", key);
+            return key;
+        }
+        return property;
     }
 }

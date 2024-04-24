@@ -6,6 +6,7 @@ import lol.koblizek.bytelens.api.events.ProjectCreationEvent;
 import javax.swing.*;
 
 public interface ProjectType {
+
     default JPanel populate(JPanel panel) {
         return panel;
     }
@@ -13,6 +14,7 @@ public interface ProjectType {
     default Project onProjectCreated(ProjectCreationEvent e) {
         ByteLens.getInstance().getLogger()
                 .info("Preparing to create new project: " + e.getName());
-        return new Project(this, new GenericProjectInformation(e.getName(), e.getLocation()));
+        return new Project(this, new GenericProjectInformation(e.getName(),
+                e.getLocation().resolve(e.getName() + "/")));
     }
 }

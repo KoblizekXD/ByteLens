@@ -22,7 +22,13 @@ public enum ProjectTypes implements ProjectType {
 
         @Override
         public Project onProjectCreated(ProjectCreationEvent e) {
-            return super.onProjectCreated(e);
+            Project project = super.onProjectCreated(e);
+            if (!project.getInfo().projectDir()
+                    .toFile().mkdirs())
+                ByteLens.getInstance().getLogger()
+                        .error("Failed to create project directory: {}", project.getInfo().projectDir());
+
+            return project;
         }
     };
 
