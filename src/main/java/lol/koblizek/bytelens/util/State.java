@@ -1,5 +1,7 @@
 package lol.koblizek.bytelens.util;
 
+import java.util.function.Consumer;
+
 public class State {
     private String message;
     private Status status;
@@ -31,5 +33,24 @@ public class State {
 
     public static State ok() {
         return new State(Status.OK, null);
+    }
+
+    public State then(Consumer<State> consumer) {
+        consumer.accept(this);
+        return this;
+    }
+
+    public State ifFailed(Consumer<State> consumer) {
+        if (failed()) {
+            consumer.accept(this);
+        }
+        return this;
+    }
+
+    public State ifOk(Consumer<State> consumer) {
+        if (!failed()) {
+            consumer.accept(this);
+        }
+        return this;
     }
 }
