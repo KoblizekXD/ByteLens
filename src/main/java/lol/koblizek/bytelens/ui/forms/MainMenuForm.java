@@ -1,6 +1,5 @@
 package lol.koblizek.bytelens.ui.forms;
 
-import lol.koblizek.bytelens.ByteLens;
 import lol.koblizek.bytelens.resource.ResourceManager;
 import lol.koblizek.bytelens.ui.Form;
 import lol.koblizek.bytelens.ui.TreeView;

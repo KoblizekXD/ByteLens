@@ -2,6 +2,7 @@ package lol.koblizek.bytelens.ui.forms;
 
 import lol.koblizek.bytelens.api.ProjectType;
 import lol.koblizek.bytelens.api.ProjectTypes;
+import lol.koblizek.bytelens.api.events.ProjectCreationEvent;
 import lol.koblizek.bytelens.ui.Dialog;
 import lol.koblizek.bytelens.util.ITranslatable;
 
@@ -50,12 +51,13 @@ public class NewProjectForm extends Dialog implements ITranslatable {
         label.setHorizontalAlignment(SwingConstants.CENTER);
         label.setFont(new Font("Calibri", Font.BOLD, 24));
         panel.add(label, BorderLayout.NORTH);
-        panel.add(new JPanel(), BorderLayout.CENTER);
+        JPanel inner = new JPanel();
+        panel.add(inner, BorderLayout.CENTER);
         JPanel bottomPanel = new JPanel();
         JButton b1 = new JButton(getValue("menu.main.new_proj.create"));
         b1.addActionListener(e -> {
             JList<ProjectType> list = (JList<ProjectType>)((JSplitPane) panel.getParent()).getLeftComponent();
-            System.out.println(list.getSelectedValue());
+            list.getSelectedValue().onProjectCreated(new ProjectCreationEvent(inner));
         });
         bottomPanel.add(b1);
         panel.add(bottomPanel, BorderLayout.PAGE_END);

@@ -13,7 +13,7 @@ public interface ProjectType {
 
     default Project onProjectCreated(ProjectCreationEvent e) {
         ByteLens.getInstance().getLogger()
-                .info("Preparing to create new project: " + e.getName());
+                .info("Preparing to create new project: {}", e.getName());
         return new Project(this, new GenericProjectInformation(e.getName(),
                 e.getLocation().resolve(e.getName() + "/")));
     }

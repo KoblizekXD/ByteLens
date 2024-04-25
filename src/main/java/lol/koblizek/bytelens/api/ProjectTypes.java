@@ -2,15 +2,18 @@ package lol.koblizek.bytelens.api;
 
 import lol.koblizek.bytelens.ByteLens;
 import lol.koblizek.bytelens.api.events.ProjectCreationEvent;
+import lol.koblizek.bytelens.util.InstanceAccessor;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
-public enum ProjectTypes implements ProjectType {
+public enum ProjectTypes implements ProjectType, InstanceAccessor {
     NEW_PROJECT {
         @Override
         public JPanel populate(JPanel panel) {
@@ -34,9 +37,14 @@ public enum ProjectTypes implements ProjectType {
             Project project = super.onProjectCreated(e);
             if (!project.getInfo().projectDir()
                     .toFile().mkdirs())
-                ByteLens.getInstance().getLogger()
+                instance().getLogger()
                         .error("Failed to create project directory: {}", project.getInfo().projectDir());
-
+            try {
+                Files.createFile(project.getProjectFile().toPath());
+                instance().addProject(project.getProjectFile().toPath());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
             return project;
         }
     };

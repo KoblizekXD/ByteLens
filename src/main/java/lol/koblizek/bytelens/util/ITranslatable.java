@@ -4,7 +4,9 @@ import lol.koblizek.bytelens.ByteLens;
 
 /**
  * Interface for classes that need to access translation pairs.
+ * @deprecated Use {@link InstanceAccessor} instead.
  */
+@Deprecated
 public interface ITranslatable {
     /**
      * Returns the value of the translation pair with the given key.

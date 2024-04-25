@@ -5,6 +5,10 @@ import lol.koblizek.bytelens.ByteLens;
 import lol.koblizek.bytelens.resource.ResourceManager;
 import lol.koblizek.bytelens.ui.forms.MainMenuForm;
 import lol.koblizek.bytelens.util.State;
+import lol.koblizek.bytelens.util.SystemExceptionHandler;
+
+import java.io.File;
+import java.nio.file.Files;
 
 public class Bootstrap {
 
@@ -14,6 +18,19 @@ public class Bootstrap {
         if (initialized) {
             return State.failing("Bootstrap can not be initialized multiple times");
         }
+
+        try {
+            File localDir = byteLens.getLocalApplicationData().toFile();
+            localDir.mkdirs();
+            File projects = localDir.toPath().resolve("projects.json").toFile();
+            projects.createNewFile();
+            Files.writeString(projects.toPath(), "[]");
+        } catch (Exception e) {
+            byteLens.getLogger()
+                    .warn("Failed to create local directory for app data, any application data won't be saved");
+        }
+
+        Thread.setDefaultUncaughtExceptionHandler(new SystemExceptionHandler());
 
         byteLens.setResourceManager(ResourceManager.init());
         ResourceManager resourceManager = byteLens.getResourceManager();

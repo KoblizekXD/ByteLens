@@ -22,7 +22,7 @@ public class ProjectCreationEvent implements Event {
 
     public Component getById(String id) {
         for (Component component : parent.getComponents()) {
-            if (component.getName().equals(id)) {
+            if (component.getName() != null && component.getName().equals(id)) {
                 return component;
             }
         }
