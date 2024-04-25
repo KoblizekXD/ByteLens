@@ -1,11 +1,13 @@
 package lol.koblizek.bytelens.ui.forms;
 
+import lol.koblizek.bytelens.ByteLens;
 import lol.koblizek.bytelens.resource.ResourceManager;
 import lol.koblizek.bytelens.ui.Form;
 import lol.koblizek.bytelens.ui.TreeView;
 
 import javax.swing.*;
 import java.awt.*;
+import java.nio.file.Path;
 
 public class MainMenuForm extends Form {
     @Override
@@ -27,6 +29,10 @@ public class MainMenuForm extends Form {
         panel.setPreferredSize(new Dimension(400, panel.getHeight()));
         panel.setLayout(new BorderLayout());
         TreeView tree = new TreeView();
+        Path[] projects = ByteLens.getInstance().getProjects();
+        for (Path p : projects) {
+            tree.addNode(new TreeView.Node(p.getFileName().toString()));
+        }
         JLabel label = new JLabel(r.get("menu.main.projects"));
         label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         panel.add(label, BorderLayout.NORTH);

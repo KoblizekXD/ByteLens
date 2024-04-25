@@ -1,6 +1,7 @@
 package lol.koblizek.bytelens.api;
 
 import java.io.File;
+import java.nio.file.Path;
 
 public class Project {
 
@@ -22,5 +23,9 @@ public class Project {
 
     public File getProjectFile() {
         return info.projectDir().resolve(info.getGenericName() + ".byteproj").toFile();
+    }
+
+    public Path getProjectDirectory() {
+        return info.projectDir();
     }
 }

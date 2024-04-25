@@ -11,8 +11,12 @@ public abstract class Dialog extends JDialog {
     public abstract void initComponents();
 
     public void showForm() {
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(getParent());
         setVisible(true);
+    }
+
+    public void hideForm() {
+        setVisible(false);
     }
 
     public void add(SyntheticComponent component) {

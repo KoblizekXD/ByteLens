@@ -38,12 +38,12 @@ public final class ByteLens {
             logger.error("Failed to start ByteLens: {}", result.getMessage());
             System.exit(1);
         }
-        currentMainForm.showForm();
     }
 
     public static void main(String[] args) {
         if (instance == null) {
             instance = new ByteLens(args);
+            instance.currentMainForm.showForm();
         } else {
             throw new IllegalStateException("Program already running");
         }
@@ -82,13 +82,13 @@ public final class ByteLens {
 
     public State addProject(Path configFile) {
         try (var reader = new FileReader(getLocalApplicationData().resolve("projects.json").toFile())) {
-            var projects = Arrays.stream(gson.fromJson(reader, String[].class)).map(Path::of).toArray(Path[]::new);
-            if (Arrays.asList(projects).contains(configFile)) {
+            var projects = gson.fromJson(reader, String[].class);
+            if (Arrays.asList(projects).contains(configFile.toString())) {
                 return State.failing("Project file already exists at location" + configFile);
             }
-            var newProjects = new Path[projects.length + 1];
+            var newProjects = new String[projects.length + 1];
             System.arraycopy(projects, 0, newProjects, 0, projects.length);
-            newProjects[projects.length] = configFile;
+            newProjects[projects.length] = configFile.toString();
             try (var writer = new FileWriter(getLocalApplicationData().resolve("projects.json").toFile())) {
                 gson.toJson(newProjects, writer);
             }

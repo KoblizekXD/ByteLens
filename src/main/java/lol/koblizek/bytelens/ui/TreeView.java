@@ -2,6 +2,7 @@ package lol.koblizek.bytelens.ui;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 
 public class TreeView implements SyntheticComponent {
@@ -15,7 +16,7 @@ public class TreeView implements SyntheticComponent {
     }
 
     public TreeView() {
-        tree = new JTree(new DefaultMutableTreeNode());
+        tree = new JTree(new DefaultMutableTreeNode("Projects"));
         tree.setRootVisible(false);
         this.scrollPane = new JScrollPane();
     }
@@ -24,12 +25,14 @@ public class TreeView implements SyntheticComponent {
     }
 
     public TreeView addNode(Node n) {
-        DefaultMutableTreeNode root = (DefaultMutableTreeNode)tree.getModel().getRoot();
+        DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+        DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
         DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(n.text);
         for (Node child : n.children) {
             addNode0(newNode, child);
         }
-        root.add(newNode);
+        model.insertNodeInto(newNode, root, root.getChildCount());
+        model.reload();
         return this;
     }
 

@@ -21,10 +21,13 @@ public class Bootstrap {
 
         try {
             File localDir = byteLens.getLocalApplicationData().toFile();
-            localDir.mkdirs();
+            if (!localDir.exists())
+                localDir.mkdirs();
             File projects = localDir.toPath().resolve("projects.json").toFile();
-            projects.createNewFile();
-            Files.writeString(projects.toPath(), "[]");
+            if (!projects.exists()) {
+                projects.createNewFile();
+                Files.writeString(projects.toPath(), "[]");
+            }
         } catch (Exception e) {
             byteLens.getLogger()
                     .warn("Failed to create local directory for app data, any application data won't be saved");

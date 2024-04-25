@@ -2,13 +2,16 @@ package lol.koblizek.bytelens.util;
 
 import java.util.function.Consumer;
 
-public class State {
-    private String message;
-    private Status status;
+public class State implements InstanceAccessor {
+    private final String message;
+    private final Status status;
 
     public State(Status status, String message) {
         this.message = message;
         this.status = status;
+        if (status == Status.ERROR) {
+            logger().warn("State failing: {}", message);
+        }
     }
 
     public boolean failed() {

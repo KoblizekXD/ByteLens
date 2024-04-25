@@ -2,6 +2,7 @@ package lol.koblizek.bytelens.api;
 
 import lol.koblizek.bytelens.ByteLens;
 import lol.koblizek.bytelens.api.events.ProjectCreationEvent;
+import lol.koblizek.bytelens.ui.Dialog;
 import lol.koblizek.bytelens.util.InstanceAccessor;
 
 import javax.swing.*;
@@ -40,7 +41,13 @@ public enum ProjectTypes implements ProjectType, InstanceAccessor {
                 instance().getLogger()
                         .error("Failed to create project directory: {}", project.getInfo().projectDir());
             try {
+                Dialog dialog = (Dialog) SwingUtilities.getWindowAncestor(e.getWindowParent());
                 Files.createFile(project.getProjectFile().toPath());
+                var dir = project.getProjectDirectory();
+                Files.createDirectories(dir.resolve("sources/"));
+                Files.createDirectories(dir.resolve("resources/"));
+                Files.createDirectories(dir.resolve("libraries/"));
+                dialog.hideForm();
                 instance().addProject(project.getProjectFile().toPath());
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
