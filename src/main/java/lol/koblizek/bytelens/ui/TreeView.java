@@ -1,9 +1,16 @@
 package lol.koblizek.bytelens.ui;
 
+import lol.koblizek.bytelens.ByteLens;
+
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.beans.BeanProperty;
+import java.nio.file.Path;
+import java.util.Objects;
 
 public class TreeView implements SyntheticComponent {
 
@@ -31,7 +38,28 @@ public class TreeView implements SyntheticComponent {
         }
     }
 
-    public record Node(String text, Node... children) {
+    public static class Node<T> {
+        private final T text;
+        private final Node<?>[] children;
+
+        public Node(T text, Node<?>... children) {
+            this.text = text;
+            this.children = children;
+        }
+
+        public String text() {
+            return text.toString();
+        }
+
+        public Node<?>[] children() {
+            return children;
+        }
+    }
+
+    public static final class PathNode extends Node<Path> {
+        public PathNode(Path text, Node<?>... children) {
+            super(text, children);
+        }
     }
 
     public TreeView addNode(Node n) {
@@ -69,5 +97,57 @@ public class TreeView implements SyntheticComponent {
     public JComponent asComponent() {
         scrollPane.setViewportView(tree);
         return scrollPane;
+    }
+
+    @BeanProperty(preferred = true, description = "Popup to show")
+    public void setComponentPopupMenu() {
+        tree.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                DefaultTreeModel model = (DefaultTreeModel) tree.getModel();
+                if (e.isPopupTrigger()) {
+                    int row = tree.getRowForLocation(e.getX(), e.getY());
+                    if (row == -1) {
+                        return;
+                    }
+                    tree.setSelectionRow(row);
+                    var path = model.getPathToRoot((DefaultMutableTreeNode)tree.getLastSelectedPathComponent());
+                    JPopupMenu popup = new JPopupMenu();
+                    JMenuItem i = new JMenuItem(path[1].toString());
+                    JMenuItem delete = new JMenuItem("Delete");
+                    delete.addActionListener(a -> {
+                        ByteLens.getInstance().deleteProject((Path) ((DefaultMutableTreeNode)path[1]).getUserObject());
+                    });
+                    i.setEnabled(false);
+                    popup.add(i);
+                    popup.add(delete);
+                    popup.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+    }
+
+    public JPopupMenu getComponentPopupMenu() {
+        return tree.getComponentPopupMenu();
     }
 }

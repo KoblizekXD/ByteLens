@@ -12,8 +12,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 public final class ByteLens {
 
@@ -32,7 +36,7 @@ public final class ByteLens {
 
     private ByteLens(String... args) {
         logger = LoggerFactory.getLogger(ByteLens.class);
-        logger.debug("Starting ByteLens");
+        logger.info("Starting ByteLens");
         appDataDir = new File("./.bl/");
         gson = new Gson();
         var result = Bootstrap.init(this);
@@ -82,15 +86,15 @@ public final class ByteLens {
         }
     }
 
-    public State addProject(Path configFile) {
+    public State addProject(Path projectFile) {
         try (var reader = new FileReader(getLocalApplicationData().resolve("projects.json").toFile())) {
             var projects = gson.fromJson(reader, String[].class);
-            if (Arrays.asList(projects).contains(configFile.toString())) {
-                return State.failing("Project file already exists at location" + configFile);
+            if (Arrays.asList(projects).contains(projectFile.toString())) {
+                return State.failing("Project file already exists at location" + projectFile);
             }
             var newProjects = new String[projects.length + 1];
             System.arraycopy(projects, 0, newProjects, 0, projects.length);
-            newProjects[projects.length] = configFile.toString();
+            newProjects[projects.length] = projectFile.toString();
             try (var writer = new FileWriter(getLocalApplicationData().resolve("projects.json").toFile())) {
                 gson.toJson(newProjects, writer);
             }
@@ -107,5 +111,25 @@ public final class ByteLens {
             }
         }
         return false;
+    }
+
+    public void deleteProject(Path projectFile) {
+        try (var reader = new FileReader(getLocalApplicationData().resolve("projects.json").toFile())) {
+            logger.warn("Removing project at {} from database...", projectFile);
+            List<String> projects = gson.fromJson(reader, List.class);
+            var newProjects = new String[projects.size() - 1];
+            projects.remove(projectFile.toString());
+            projects.toArray(newProjects);
+            try (var writer = new FileWriter(getLocalApplicationData().resolve("projects.json").toFile())) {
+                gson.toJson(newProjects, writer);
+            }
+            logger.warn("Deleting directory {}", projectFile.getParent());
+            Files.walk(projectFile.getParent())
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

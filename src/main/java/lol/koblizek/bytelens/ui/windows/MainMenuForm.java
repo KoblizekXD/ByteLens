@@ -31,7 +31,7 @@ public class MainMenuForm extends Form {
         TreeView tree = new TreeView();
         Path[] projects = ByteLens.getInstance().getProjects();
         for (Path p : projects) {
-            tree.addNode(new TreeView.Node(p.getFileName().toString(),
+            tree.addNode(new TreeView.PathNode(p,
                     new TreeView.Node("sources/"),
                     new TreeView.Node("resources/"),
                     new TreeView.Node("libraries/")));
@@ -39,6 +39,7 @@ public class MainMenuForm extends Form {
         JLabel label = new JLabel(r.get("menu.main.projects"));
         label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         panel.add(label, BorderLayout.NORTH);
+        tree.setComponentPopupMenu();
         panel.add(tree.asComponent());
         panel.setMinimumSize(new Dimension(250, panel.getHeight()));
         return panel;
