@@ -1,8 +1,10 @@
 package lol.koblizek.bytelens.ui;
 
+import lol.koblizek.bytelens.util.InstanceAccessor;
+
 import javax.swing.*;
 
-public abstract class Form extends JFrame {
+public abstract class Form extends JFrame implements InstanceAccessor {
     private boolean shown = false;
 
     public Form() {

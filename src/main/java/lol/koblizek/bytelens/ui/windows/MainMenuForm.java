@@ -1,4 +1,4 @@
-package lol.koblizek.bytelens.ui.forms;
+package lol.koblizek.bytelens.ui.windows;
 
 import lol.koblizek.bytelens.ByteLens;
 import lol.koblizek.bytelens.resource.ResourceManager;

@@ -1,8 +1,8 @@
 package lol.koblizek.bytelens.api;
 
-import lol.koblizek.bytelens.ByteLens;
 import lol.koblizek.bytelens.api.events.ProjectCreationEvent;
 import lol.koblizek.bytelens.ui.Dialog;
+import lol.koblizek.bytelens.ui.MessageBoxReply;
 import lol.koblizek.bytelens.util.InstanceAccessor;
 
 import javax.swing.*;
@@ -41,7 +41,7 @@ public enum ProjectTypes implements ProjectType, InstanceAccessor {
                 if (project.getProjectDirectory().toFile().exists()
                         || instance().projectRegistered(project.getProjectFile().toPath())){
                     var res = dialog.confirmDialog("Warning", "Files are present selected location, are you sure you want to overwrite them?");
-                    if (res == Dialog.MessageBoxReply.NO) {
+                    if (res == MessageBoxReply.NO) {
                         return null;
                     }
                 }

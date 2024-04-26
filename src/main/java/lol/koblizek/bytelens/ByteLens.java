@@ -1,7 +1,6 @@
 package lol.koblizek.bytelens;
 
 import com.google.gson.Gson;
-import com.google.gson.stream.JsonWriter;
 import lol.koblizek.bytelens.init.Bootstrap;
 import lol.koblizek.bytelens.resource.ResourceManager;
 import lol.koblizek.bytelens.ui.Form;
@@ -9,7 +8,10 @@ import lol.koblizek.bytelens.util.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 

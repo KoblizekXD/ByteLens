@@ -3,7 +3,7 @@ package lol.koblizek.bytelens.init;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import lol.koblizek.bytelens.ByteLens;
 import lol.koblizek.bytelens.resource.ResourceManager;
-import lol.koblizek.bytelens.ui.forms.MainMenuForm;
+import lol.koblizek.bytelens.ui.windows.MainMenuForm;
 import lol.koblizek.bytelens.util.State;
 import lol.koblizek.bytelens.util.SystemExceptionHandler;
 
