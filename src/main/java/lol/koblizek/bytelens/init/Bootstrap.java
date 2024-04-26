@@ -1,8 +1,10 @@
 package lol.koblizek.bytelens.init;
 
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneDarkIJTheme;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import lol.koblizek.bytelens.ByteLens;
 import lol.koblizek.bytelens.resource.ResourceManager;
+import lol.koblizek.bytelens.ui.windows.AppWindowForm;
 import lol.koblizek.bytelens.ui.windows.MainMenuForm;
 import lol.koblizek.bytelens.util.State;
 import lol.koblizek.bytelens.util.SystemExceptionHandler;
@@ -39,9 +41,10 @@ public class Bootstrap {
         ResourceManager resourceManager = byteLens.getResourceManager();
         resourceManager.selectTranslationSource(resourceManager.getResource("/langs/en_us.properties"));
 
-        FlatMacDarkLaf.setup();
+        FlatAtomOneDarkIJTheme.setup();
 
-        byteLens.currentMainForm = new MainMenuForm();
+        // byteLens.currentMainForm = new MainMenuForm();
+        byteLens.currentMainForm = new AppWindowForm();
 
         initialized = true;
         return State.ok();
