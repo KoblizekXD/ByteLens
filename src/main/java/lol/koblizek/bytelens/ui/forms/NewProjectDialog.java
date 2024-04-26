@@ -1,5 +1,6 @@
 package lol.koblizek.bytelens.ui.forms;
 
+import lol.koblizek.bytelens.api.Project;
 import lol.koblizek.bytelens.api.ProjectType;
 import lol.koblizek.bytelens.api.ProjectTypes;
 import lol.koblizek.bytelens.api.events.ProjectCreationEvent;
@@ -9,9 +10,9 @@ import lol.koblizek.bytelens.util.ITranslatable;
 import javax.swing.*;
 import java.awt.*;
 
-public class NewProjectForm extends Dialog implements ITranslatable {
+public class NewProjectDialog extends Dialog implements ITranslatable {
 
-    public NewProjectForm(JFrame parent) {
+    public NewProjectDialog(JFrame parent) {
         super(parent);
     }
 
@@ -57,7 +58,10 @@ public class NewProjectForm extends Dialog implements ITranslatable {
         JButton b1 = new JButton(getValue("menu.main.new_proj.create"));
         b1.addActionListener(e -> {
             JList<ProjectType> list = (JList<ProjectType>)((JSplitPane) panel.getParent()).getLeftComponent();
-            list.getSelectedValue().onProjectCreated(new ProjectCreationEvent(inner));
+            Project project = list.getSelectedValue().onProjectCreated(new ProjectCreationEvent(inner));
+            if (project == null) {
+                logger().warn("Project creation cancelled by user");
+            }
         });
         bottomPanel.add(b1);
         panel.add(bottomPanel, BorderLayout.PAGE_END);

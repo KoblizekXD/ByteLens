@@ -36,12 +36,19 @@ public enum ProjectTypes implements ProjectType, InstanceAccessor {
         @Override
         public Project onProjectCreated(ProjectCreationEvent e) {
             Project project = super.onProjectCreated(e);
-            if (!project.getInfo().projectDir()
-                    .toFile().mkdirs())
-                instance().getLogger()
-                        .error("Failed to create project directory: {}", project.getInfo().projectDir());
             try {
                 Dialog dialog = (Dialog) SwingUtilities.getWindowAncestor(e.getWindowParent());
+                if (project.getProjectDirectory().toFile().exists()
+                        || instance().projectRegistered(project.getProjectFile().toPath())){
+                    var res = dialog.confirmDialog("Warning", "Files are present selected location, are you sure you want to overwrite them?");
+                    if (res == Dialog.MessageBoxReply.NO) {
+                        return null;
+                    }
+                }
+                if (!project.getInfo().projectDir()
+                        .toFile().mkdirs())
+                    instance().getLogger()
+                            .error("Failed to create project directory: {}", project.getInfo().projectDir());
                 Files.createFile(project.getProjectFile().toPath());
                 var dir = project.getProjectDirectory();
                 Files.createDirectories(dir.resolve("sources/"));

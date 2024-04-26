@@ -21,6 +21,16 @@ public class TreeView implements SyntheticComponent {
         this.scrollPane = new JScrollPane();
     }
 
+    private void expandAllNodes(JTree tree, int startingIndex, int rowCount){
+        for(int i = startingIndex; i < rowCount; i++){
+            tree.expandRow(i);
+        }
+
+        if(tree.getRowCount() != rowCount){
+            expandAllNodes(tree, rowCount, tree.getRowCount());
+        }
+    }
+
     public record Node(String text, Node... children) {
     }
 
@@ -33,6 +43,7 @@ public class TreeView implements SyntheticComponent {
         }
         model.insertNodeInto(newNode, root, root.getChildCount());
         model.reload();
+        expandAllNodes(tree, 0, tree.getRowCount());
         return this;
     }
 

@@ -31,7 +31,10 @@ public class MainMenuForm extends Form {
         TreeView tree = new TreeView();
         Path[] projects = ByteLens.getInstance().getProjects();
         for (Path p : projects) {
-            tree.addNode(new TreeView.Node(p.getFileName().toString()));
+            tree.addNode(new TreeView.Node(p.getFileName().toString(),
+                    new TreeView.Node("sources/"),
+                    new TreeView.Node("resources/"),
+                    new TreeView.Node("libraries/")));
         }
         JLabel label = new JLabel(r.get("menu.main.projects"));
         label.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -66,7 +69,7 @@ public class MainMenuForm extends Form {
         buttons.setLayout(new GridLayout(1, 3, 5, 5));
         JButton b1 = new JButton(r.get("menu.main.new_proj"));
         b1.addActionListener(ac -> {
-            new NewProjectForm(this).showForm();
+            new NewProjectDialog(this).showForm();
         });
         JButton b2 = new JButton(r.get("menu.main.open_proj"));
         JButton b3 = new JButton(r.get("menu.main.options"));

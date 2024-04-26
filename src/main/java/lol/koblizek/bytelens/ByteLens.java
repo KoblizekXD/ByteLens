@@ -97,4 +97,13 @@ public final class ByteLens {
         }
         return State.ok();
     }
+
+    public boolean projectRegistered(Path projectFile) {
+        for (Path project : getProjects()) {
+            if (project.equals(projectFile)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
