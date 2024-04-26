@@ -1,5 +1,8 @@
 package lol.koblizek.bytelens.resource;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
+
+import javax.swing.*;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,5 +46,9 @@ public class Resource<T> {
         }
 
         return properties;
+    }
+
+    public Icon asIcon() {
+        return new FlatSVGIcon(url).derive(24, 24);
     }
 }

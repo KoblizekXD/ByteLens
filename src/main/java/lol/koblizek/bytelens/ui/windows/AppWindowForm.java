@@ -1,5 +1,6 @@
 package lol.koblizek.bytelens.ui.windows;
 
+import com.formdev.flatlaf.icons.FlatFileViewComputerIcon;
 import lol.koblizek.bytelens.ui.Form;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.Style;
@@ -41,9 +42,22 @@ public class AppWindowForm extends Form {
         RTextScrollPane sp = new RTextScrollPane(textArea);
         sp.setBorder(null);
         add(sp, BorderLayout.CENTER);
+        add(createLeftBar(), BorderLayout.LINE_START);
     }
 
-    private static JMenuBar createMenuBar() {
+    private JPanel createLeftBar() {
+        JPanel leftPanel = new JPanel();
+        JToolBar leftBar = new JToolBar();
+        leftBar.setOrientation(JToolBar.VERTICAL);
+        leftBar.setFloatable(false);
+        var ico = new JButton(icon("projectDirectory_dark"));
+        ico.setPreferredSize(new Dimension(32, 32));
+        leftBar.add(ico);
+        leftPanel.add(leftBar);
+        return leftPanel;
+    }
+
+    private JMenuBar createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         JMenu projectName = new JMenu("Test Project");
         projectName.setEnabled(false);
