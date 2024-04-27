@@ -12,9 +12,10 @@ import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class AppWindowForm extends Form {
 
@@ -67,6 +68,15 @@ public class AppWindowForm extends Form {
         textArea.setSyntaxEditingStyle(RSyntaxTextArea.SYNTAX_STYLE_JAVA);
         textArea.setCodeFoldingEnabled(true);
         textArea.setAntiAliasingEnabled(true);
+        textArea.addMouseWheelListener(l -> {
+            if (l.isControlDown()) {
+                if (l.getWheelRotation() < 0) {
+                    textArea.setFont(textArea.getFont().deriveFont(textArea.getFont().getSize() + 1f));
+                } else {
+                    textArea.setFont(textArea.getFont().deriveFont(textArea.getFont().getSize() - 1f));
+                }
+            }
+        });
         RTextScrollPane sp = new RTextScrollPane(textArea);
         sp.setBorder(null);
         JSplitPane splitPane = new JSplitPane();
@@ -92,6 +102,11 @@ public class AppWindowForm extends Form {
         JButton closeButton = new JButton(icon("hide_dark", 16));
         closeButton.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
         closeButton.setBackground(Color.decode("0x323844"));
+        closeButton.addActionListener(e -> {
+            titleBar.getParent().setVisible(false);
+            ((JSplitPane)titleBar.getParent().getParent())
+                    .setDividerSize(0);
+        });
         titleBar.add(titleLabel, BorderLayout.CENTER);
         titleBar.add(closeButton, BorderLayout.LINE_END);
         return titleBar;
@@ -107,18 +122,26 @@ public class AppWindowForm extends Form {
         return leftPanel;
     }
 
+    private JButton createToolbarButton(String icon, String name, String... tooltip) {
+        JButton button = new JButton(icon(icon));
+        button.setName(name);
+        if (tooltip.length > 0)
+            button.setToolTipText(tooltip[0]);
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        return button;
+    }
+
     private JToolBar createLeftBar() {
         JToolBar leftBar = new JToolBar();
+        leftBar.setPreferredSize(new Dimension(44, 0));
         leftBar.setOrientation(JToolBar.VERTICAL);
         leftBar.setFloatable(false);
-        var ico = new JButton(icon("projectDirectory_dark"));
-        ico.setPreferredSize(new Dimension(32, 32));
-        ico.setSelected(true);
-        leftBar.add(ico);
         leftBar.add(Box.createRigidArea(new Dimension(0, 3)));
-        leftBar.add(new JButton(icon("structure_dark")));
+        leftBar.add(createToolbarButton("projectDirectory_dark", "appwindowform.leftPanel.project", "Project"));
+        leftBar.add(Box.createRigidArea(new Dimension(0, 3)));
+        leftBar.add(createToolbarButton("structure_dark", "appwindowform.leftPanel.file", "Structure"));
         leftBar.setBackground(Color.decode("0x21252b"));
-        leftBar.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.decode("0x282c34")));
+        leftBar.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.decode("0x333841")));
         return leftBar;
     }
 
@@ -126,17 +149,18 @@ public class AppWindowForm extends Form {
         JToolBar tb = (JToolBar) wrapper.getComponent(0);
         JSplitPane sp = (JSplitPane) wrapper.getComponent(1);
         JPanel left = (JPanel) sp.getLeftComponent();
+        left.add(redrawBasedOnComponent("appwindowform.leftPanel.project"));
         for (Component c : tb.getComponents()) {
             if (c instanceof JButton btn) {
                 btn.addActionListener(e -> {
                     btn.setSelected(true);
                     Arrays.stream(tb.getComponents()).filter(x -> !x.equals(btn) && x instanceof JButton)
                             .forEach(x -> ((JButton) x).setSelected(false));
-                    System.out.println("new selected");
                     // TODO: Here redraw based on selection
                     if (btn.getName() != null) {
-                        ((JPanel)left.getComponent(1)).removeAll();
-                        left.add(redrawBasedOnComponent(btn.getName(), left), 1);
+                        ((JLabel)((JPanel) left.getComponent(0)).getComponent(0))
+                                .setText(btn.getToolTipText() != null ? btn.getToolTipText() : btn.getName());
+                        left.add(redrawBasedOnComponent(btn.getName()), 1);
                         left.revalidate();
                     } else {
                         logger().warn("Key identificator not found for selected button");
@@ -146,13 +170,15 @@ public class AppWindowForm extends Form {
         }
     }
 
-    private JPanel redrawBasedOnComponent(String key, JPanel panel) {
+    private JPanel redrawBasedOnComponent(String key) {
+        JPanel panel = new JPanel();
+        panel.setBackground(Color.decode("0x21252b"));
         return panel;
     }
 
     private JMenuBar createMenuBar() {
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.setFont(JETBRAINS_MONO.deriveFont(14f));
+        MenuBar menuBar = new MenuBar(Color.decode("0x21252b"));
+        menuBar.setFont(Font.getFont("Calibri"));
         menuBar.setPreferredSize(new Dimension(0, 38));
         JMenu projectName = new JMenu("Test Project");
         projectName.setEnabled(false);
@@ -168,12 +194,31 @@ public class AppWindowForm extends Form {
         menuBar.add(viewMenu);
         menuBar.add(toolsMenu);
         menuBar.add(helpMenu);
+        menuBar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.decode("0x333841")));
         return menuBar;
+    }
+
+    private static class MenuBar extends JMenuBar {
+
+        private final Color bgC;
+
+        public MenuBar(Color bgColor) {
+            this.bgC = bgColor;
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setColor(bgC);
+            g2d.fillRect(0, 0, getWidth() - 1, getHeight() - 1);
+        }
     }
 
     private void createScheme(RSyntaxTextArea textArea) {
         textArea.setFont(JETBRAINS_MONO);
-        textArea.setBackground(UIManager.getColor("TextArea.background"));
+        // textArea.setBackground(UIManager.getColor("TextArea.background"));
+        textArea.setBackground(Color.decode("0x282c34"));
         textArea.setForeground(UIManager.getColor("TextArea.foreground"));
         textArea.setCurrentLineHighlightColor(new Color(0, 0, 0, 50));
         textArea.setSelectionColor(new Color(255, 255, 255, 40));
