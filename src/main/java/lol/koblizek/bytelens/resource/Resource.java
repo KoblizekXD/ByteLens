@@ -51,4 +51,8 @@ public class Resource<T> {
     public Icon asIcon() {
         return new FlatSVGIcon(url).derive(24, 24);
     }
+
+    public Icon asIcon(int size) {
+        return new FlatSVGIcon(url).derive(size, size);
+    }
 }

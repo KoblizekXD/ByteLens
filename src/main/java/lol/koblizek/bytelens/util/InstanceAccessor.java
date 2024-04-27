@@ -26,4 +26,8 @@ public interface InstanceAccessor {
     default Icon icon(String key) {
         return resource("/icons/" + key + ".svg").asIcon();
     }
+
+    default Icon icon(String key, int size) {
+        return resource("/icons/" + key + ".svg").asIcon(size);
+    }
 }

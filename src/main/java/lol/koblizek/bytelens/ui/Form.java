@@ -3,6 +3,7 @@ package lol.koblizek.bytelens.ui;
 import lol.koblizek.bytelens.util.InstanceAccessor;
 
 import javax.swing.*;
+import java.awt.*;
 
 public abstract class Form extends JFrame implements InstanceAccessor {
     private boolean shown = false;
@@ -25,5 +26,16 @@ public abstract class Form extends JFrame implements InstanceAccessor {
 
     public void add(SyntheticComponent component) {
         add(component.asComponent());
+    }
+
+    public Component getComponent(String name) {
+        synchronized (getTreeLock()) {
+            for (Component component : getComponents()) {
+                if (component.getName().equals(name)) {
+                    return component;
+                }
+            }
+            return null;
+        }
     }
 }
